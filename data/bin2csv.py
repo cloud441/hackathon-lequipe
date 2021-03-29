@@ -69,17 +69,17 @@ def bin2csv():
     for filename in glob.glob("./given_files/data/*.bin"):
         key = re.search("\_(.*)\.", filename).group(1)
         
-        data["key"].append(key)
 
         trames, _ = get_pics_from_file(filename)
 
         for pics in trames:
+            data["key"].append(key)
             for i in range(0, 17):
                 data["pic" + str(i + 1)].append(pics[i])
         break
 
     df = pd.DataFrame.from_dict(data)
-    df.to_csv("keys_freq.csv")
+    df.to_csv("keys_freq.csv", index=False)
                     
 
 
