@@ -1,23 +1,27 @@
 #!/usr/bin/env python3
+
 import os
-import re
-import pandas as pd
+
 import glob
 import numpy as np
+import pandas as pd
+import re
 
-# Compile all binary files into one csv database.
+''' Compile all binary files into one csv database. '''
 
 def read_int(f):
     ba = bytearray(4)
     f.readinto(ba)
     prm = np.frombuffer(ba, dtype=np.int32)
     return prm[0]
-    
+
+
 def read_double(f):
     ba = bytearray(8)
     f.readinto(ba)
     prm = np.frombuffer(ba, dtype=np.double)
     return prm[0]
+
 
 def read_double_tab(f, n):
     ba = bytearray(8*n)
@@ -27,7 +31,8 @@ def read_double_tab(f, n):
     else:
         prm = np.frombuffer(ba, dtype=np.double)
         return prm
-    
+
+
 def get_pics_from_file(filename):
     # Lecture du fichier d'infos + pics detectes (post-processing KeyFinder)
     print("Ouverture du fichier de pics "+filename)
@@ -54,6 +59,7 @@ def get_pics_from_file(filename):
     f_pic.close()
     return tab_pics, info
 
+
 def bin2csv():
     # ls data
     # put in []
@@ -68,23 +74,18 @@ def bin2csv():
 
     for filename in glob.glob("./given_files/data/*.bin"):
         key = re.search("\_(.*)\.", filename).group(1)
-        
-        data["key"].append(key)
 
         trames, _ = get_pics_from_file(filename)
 
         for pics in trames:
-            for i in range(1, 18):
-                data["pic" + str(i)].append(pics[i])
+            data["key"].append(key)
+            for i in range(0, 17):
+                data["pic" + str(i + 1)].append(pics[i])
+        break
 
-
-        df = pd.DataFrame(row)
-        df.to_csv("./data/keys_freq.csv")
-                    
-
-
+    df = pd.DataFrame.from_dict(data)
+    df.to_csv("keys_freq.csv", index=False)
 
 
 if __name__ == "__main__":
     bin2csv()
-    
