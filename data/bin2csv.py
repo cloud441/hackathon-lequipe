@@ -74,12 +74,12 @@ def bin2csv():
         trames, _ = get_pics_from_file(filename)
 
         for pics in trames:
-            for i in range(1, 18):
-                data["pic" + str(i)].append(pics[i])
+            for i in range(0, 17):
+                data["pic" + str(i + 1)].append(pics[i])
+        break
 
-
-        df = pd.DataFrame(row)
-        df.to_csv("./data/keys_freq.csv")
+    df = pd.DataFrame.from_dict(data)
+    df.to_csv("keys_freq.csv")
                     
 
 
