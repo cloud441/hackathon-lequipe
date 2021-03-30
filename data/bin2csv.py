@@ -60,12 +60,25 @@ def get_pics_from_file(filename):
     return tab_pics, info
 
 
+
+def bin2df(filename):
+    data = {}
+    for i in range(1, 18):
+        data["pic" + str(i)] = []
+
+    trames, _ = get_pics_from_file(filename)
+
+    for pics in trames:
+        for i in range(0, 17):
+            data["pic" + str(i + 1)].append(pics[i])
+
+    return pd.DataFrame.from_dict(data)
+
 def bin2csv():
     # ls data
     # put in []
     # [key, pic_1, pic_2, ...]
     # write_csv() into data/keys_freq.csv
-    # 80% train, 20% validation
 
     data = {}
     data["key"] = []
@@ -81,7 +94,6 @@ def bin2csv():
             data["key"].append(key)
             for i in range(0, 17):
                 data["pic" + str(i + 1)].append(pics[i])
-        break
 
     df = pd.DataFrame.from_dict(data)
     df.to_csv("keys_freq.csv", index=False)
