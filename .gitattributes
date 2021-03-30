@@ -1,2 +1,1 @@
-data/given_files/data/*.csv filter=lfs diff=lfs merge=lfs -text
 *.csv filter=lfs diff=lfs merge=lfs -text
