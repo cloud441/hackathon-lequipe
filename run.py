@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
-# Will manage option handling later.
-
+import sys
 import hackathon
+
+hackathon.run(sys.argv)

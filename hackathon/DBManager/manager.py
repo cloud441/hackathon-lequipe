@@ -9,7 +9,6 @@ class DbManager():
     ''' Open the DB and split into train/valid table. '''
     def openTable(self, data_path):
         table = pd.read_csv(data_path)
-        table = table.loc[:42000]
 
         keys_table = table[['key']].dropna()
         pics_table = table.loc[:, table.columns != 'key'].dropna()

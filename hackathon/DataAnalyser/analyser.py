@@ -1,8 +1,10 @@
+from numpy.random import randint
 from pandas.plotting import scatter_matrix
 from sklearn import svm, metrics
-from numpy.random import randint
 import matplotlib.pyplot as plt
+import pickle
 
+clf_model_file = 'data/clf_model.sav'
 
 
 class Classifier():
@@ -12,7 +14,22 @@ class Classifier():
         clf = svm.SVC(gamma=gamma, verbose=True) if gamma else svm.SVC(verbose=True)
         clf.fit(pics_tables, key_tables.values.ravel())
 
+        with open(clf_model_file, 'wb') as f:
+            pickle.dump(clf, f)
         self.clf = clf
+
+
+    def loadModel(self):
+        try:
+            with open(clf_model_file, 'rb') as f:
+                self.clf = pickle.load(f)
+            return True
+
+        except (OSError, IOError) as e:
+            print("%s not found, you have not trained your classifier model yet." %clf_model_file)
+            return False
+
+
 
 
     ''' Predict the key according to the pic values. '''
