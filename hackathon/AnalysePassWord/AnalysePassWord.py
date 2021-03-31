@@ -12,13 +12,13 @@ def analyse_next_lettre(string, index):
     # test all hotkey
     else:
         if (index + 5 > len_string):
-            next_4_char = len_string[index:index+4]
+            next_4_char = string[index:index+4]
             if (next_4_char == "CTRL"):
                 return "CTRL"
             else:
                 return string[index]
         else:
-            next_5_char = len_string[index:index+5]
+            next_5_char = string[index:index+5]
             if (next_5_char == "SPACE"):
                 return " "
             elif (next_5_char == "SHIFT"):
@@ -58,7 +58,7 @@ class AnalysePassword():
     # return : a list of all possible password
     def analyse_the_password(self):
         password_in = self.string_to_analyse
-        password_out = [[]]
+        password_out = [""]
 
         shift = False
 
@@ -77,7 +77,7 @@ class AnalysePassword():
             elif (next_letter == "Shift"):
                 shift = True
             elif (next_letter == "ctrl" or next_letter == "\n"):
-                password_out.append([])
+                password_out.append("")
             else:
                 if (shift):
                     password_out[-1] = password_out[-1] + next_letter.upper()
