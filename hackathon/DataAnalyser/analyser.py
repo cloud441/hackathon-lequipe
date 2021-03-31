@@ -4,21 +4,24 @@ from sklearn import svm, metrics
 import matplotlib.pyplot as plt
 import pickle
 
+
 clf_model_file = 'data/clf_model.sav'
 
 
+''' Class that wraps SVM classifier and ML tools. '''
 class Classifier():
 
-    ''' Train the classifier on pics/key train table. '''
-    def train(self, pics_tables, key_tables, gamma=None):
+    ''' Train the classifier on frame/key train table. '''
+    def train(self, frames_table, keys_table, gamma=None):
         clf = svm.SVC(gamma=gamma, verbose=True) if gamma else svm.SVC(verbose=True)
-        clf.fit(pics_tables, key_tables.values.ravel())
+        clf.fit(frames_table, keys_table.values.ravel())
 
         with open(clf_model_file, 'wb') as f:
             pickle.dump(clf, f)
         self.clf = clf
 
 
+    ''' Load the SVM model saved during last training. '''
     def loadModel(self):
         try:
             with open(clf_model_file, 'rb') as f:
@@ -32,15 +35,14 @@ class Classifier():
 
 
 
-    ''' Predict the key according to the pic values. '''
-    def predict(self, pics_tables):
-        return self.clf.predict(pics_tables)
+    ''' Predict the key according to the frame values. '''
+    def predict(self, frames_table):
+        return self.clf.predict(frames_table)
 
 
-    ''' Print Confusion Matrix to verify classifier model on validation database.
-        The mean confusion Matrix is printed. '''
-    def ConfusionMatrix(self, valid_pics, valid_keys):
-        disp_mat = metrics.plot_confusion_matrix(self.clf, valid_pics, valid_keys)
+    ''' Build and save Confusion Matrix to verify classifier model on validation database. '''
+    def confusionMatrix(self, valid_frames, valid_keys):
+        disp_mat = metrics.plot_confusion_matrix(self.clf, valid_frames, valid_keys)
         disp_mat.figure_.suptitle("Confusion Matrix")
 
         print(f"Confusion Matrix: \n{disp_mat.confusion_matrix}")
