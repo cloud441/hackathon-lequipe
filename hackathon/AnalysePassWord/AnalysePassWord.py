@@ -51,7 +51,6 @@ class AnalysePassword():
             return self.string_to_analyse[n]
         else:
             print("Error : you want the", n, "eme char of password but passsword have only", len(self.string_to_analyse), "char.")
-            return -1    # main function to analyse the password
             return -1
 
     # main function to analyse the password
