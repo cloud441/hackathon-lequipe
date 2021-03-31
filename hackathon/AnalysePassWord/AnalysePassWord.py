@@ -52,6 +52,45 @@ class AnalysePassword():
         else:
             print("Error : you want the", n, "eme char of password but passsword have only", len(self.string_to_analyse), "char.")
             return -1    # main function to analyse the password
+            return -1
+
     # main function to analyse the password
     # 
     # return : a list of all possible password
+    def analyse_the_password(self):
+        password_in = self.string_to_analyse
+        password_out = [[]]
+
+        shift = False
+
+        list_of_5_letter_key = ["\n","","Shift"," "]
+        list_of_4_letter_key = ["CTRL"]
+
+        i = 0
+        while (i < len(password_in)):
+            next_letter = analyse_next_lettre(password_in, i)
+            
+            if (next_letter == -2):
+                print("Error in analyse_the_password because we are out of range")
+            elif (next_letter == -1):
+                if (len(password_out[-1]) != 0):
+                    password_out[-1] = password_out[-1][0:-2]
+            elif (next_letter == "Shift"):
+                shift = True
+            elif (next_letter == "ctrl" or next_letter == "\n"):
+                password_out.append([])
+            else:
+                if (shift):
+                    password_out[-1] = password_out[-1] + next_letter.upper()
+                else:
+                    password_out[-1] = password_out[-1] + next_letter
+            
+            if (next_letter in list_of_4_letter_key):
+                i += 4
+            elif (next_letter in list_of_5_letter_key):
+                i += 5
+            else:
+                i += 1
+        
+        return password_out
+            
