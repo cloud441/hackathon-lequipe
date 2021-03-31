@@ -1,3 +1,36 @@
+def analyse_next_lettre(string, index):
+    # function that analyse and return the letter
+    # in position index in string
+    len_string = len(string)
+    
+    # if index out of range return the error code -2
+    if (index > len_string):
+        return -2
+    # if hotkey can't be present just retrun the next letter
+    elif (index + 4 > len_string):
+        return string[index]
+    # test all hotkey
+    else:
+        if (index + 5 > len_string):
+            next_4_char = len_string[index:index+4]
+            if (next_4_char == "CTRL"):
+                return "CTRL"
+            else:
+                return string[index]
+        else:
+            next_5_char = len_string[index:index+5]
+            if (next_5_char == "SPACE"):
+                return " "
+            elif (next_5_char == "SHIFT"):
+                return "Shift"
+            elif (next_5_char == "SUPPR"):
+                return -1
+            elif (next_5_char == "NOKEY"):
+                return ""
+            elif (next_5_char == "ENTER"):
+                return "\n"
+            else:
+                return string[index]
 
 class AnalysePassword():
 
