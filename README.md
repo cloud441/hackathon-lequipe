@@ -14,7 +14,7 @@ $ virtualenv Hackathon_env
 $ source Hackathon/bin/activate
 $ pip install -r requirements.txt
 $ chmod 755 run.py
-$ ./run.py [train/load]
+$ ./run.py [train/detect]
 ```
 train: Train de classifier model and print the result confusion matrix.
         (also save the model in data/clf_model.sav)
