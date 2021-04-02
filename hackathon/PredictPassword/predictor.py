@@ -1,3 +1,5 @@
+BLK_SIZE = 6
+
 ''' Class that predicts a password based on the classifier. '''
 class PasswordPredictor():
 
@@ -14,37 +16,33 @@ class PasswordPredictor():
     def findPassword(self, frames_table, i):
         garbageKeys = ["NOKEY", "CTRL"]
         pwd = ""
-        enter_block_size = 0
-        cur_block_size = 1
-        stop_block_size = 0
+        enter_blk_size = 0
+        cur_blk_size = 1
+        stop_blk_size = 0
         last_key = "NOKEY"
 
-        while i < frames_table.shape[0]:
+        while i < frames_table.shape[0] and enter_blk_size != BLK_SIZE:
             key = self.predictKey(frames_table.iloc[i])
 
-            if key == "ENTER":
-                enter_block_size += 1
-            else:
-                enter_block_size = 0
-
-            if enter_block_size == 3:
-                return pwd
+            enter_blk_size = (enter_blk_size + 1) if key == "ENTER" else 0
 
             if key not in garbageKeys:
                 if key != last_key:
-                    stop_block_size += 1
+                    stop_blk_size += 1
 
-                    if stop_block_size == 3:
-                        if cur_block_size > 3:
+                    if stop_blk_size == BLK_SIZE:
+						# save previous key
+                        if cur_blk_size > BLK_SIZE:
                             pwd += last_key
 
-                        cur_block_size = 1
+						# we have a new block
+                        cur_blk_size = 1
                         last_key = key
-                        stop_block_size = 0
+                        stop_blk_size = 0
 
                 else:
-                    stop_block_size = 0
-                    cur_block_size += 1
+                    stop_blk_size = 0
+                    cur_blk_size += 1
 
             i += 1
 
@@ -60,11 +58,11 @@ class PasswordPredictor():
             else:
                 block_size = 0
 
-            if block_size == 3:
+            if block_size == BLK_SIZE:
                 return i
             i += 1
 
-        # Couldn't find the required key:
+        # Could not find the required key:
         return -1
 
 
