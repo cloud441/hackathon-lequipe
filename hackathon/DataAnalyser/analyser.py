@@ -1,7 +1,9 @@
+from joblib import Parallel, delayed
 from numpy.random import randint
 from pandas.plotting import scatter_matrix
 from sklearn import svm, metrics
 import matplotlib.pyplot as plt
+import numpy as np
 import pickle
 
 
@@ -38,6 +40,18 @@ class Classifier():
     ''' Predict the key according to the frame values. '''
     def predict(self, frames_table):
         return self.clf.predict(frames_table)
+
+
+    ''' Call the predict method on all keys according to frame values. '''
+    def predictKeys(self, frames_tables):
+        frames_list = frames_tables.values.tolist()
+        # We compute all prediction with multi-threading approach to gain time:
+        results = Parallel(n_jobs=-1, verbose=1)(delayed(self.predict)([frames_list[i]]) for i in range(frames_tables.shape[0]))
+        return np.vstack(results).flatten()
+
+    def validationScore(self, valid_frames, valid_keys):
+        predicted_keys = self.predictKeys(valid_frames)
+        return metrics.accuracy_score(valid_keys, predicted_keys)
 
 
     ''' Build and save Confusion Matrix to verify classifier model on validation database. '''

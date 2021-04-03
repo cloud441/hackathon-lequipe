@@ -1,6 +1,3 @@
-from joblib import Parallel, delayed
-import numpy as np
-import pandas as pd
 
 BLK_SIZE = 6
 
@@ -9,19 +6,6 @@ class PasswordPredictor():
 
     def __init__(self, clf):
         self.clf = clf
-
-
-    ''' Call the classifier to predict a key based on the frame. '''
-    def predictKey(self, frame):
-        return self.clf.predict([frame])
-
-
-    ''' Call the classifier to predict all keys based on the frame. '''
-    def predictKeys(self, frames):
-        l = frames.values.tolist()
-        # We compute all prediction with multi-threading approach to gain time:
-        results = Parallel(n_jobs=-1, verbose=1)(delayed(self.clf.predict)([l[i]]) for i in range(frames.shape[0]))
-        return np.vstack(results).flatten()
 
 
     ''' Read a flow of frame to build the secret password. '''
@@ -86,7 +70,7 @@ class PasswordPredictor():
 
     ''' Predict the password based on frame flow. '''
     def predictPassword(self, pics_table):
-        predicted_keys = self.predictKeys(pics_table)
+        predicted_keys = self.clf.predictKeys(pics_table)
         i = self.beginLogin(predicted_keys)
 
         if i == -1:

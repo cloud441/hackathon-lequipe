@@ -49,5 +49,7 @@ def run(argv):
 
     # In train case, the model is validated by analysing the confusion matrix:
     if argv[1] == 'train':
+        print("Classifier is computing the validation score ...")
+        classifier.validationScore(db.manager.valid_frames, db_manager.valid_keys)
         print("Classifier is predicting on Validation database ...")
         classifier.confusionMatrix(db_manager.valid_frames, db_manager.valid_keys)
