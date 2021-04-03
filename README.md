@@ -10,8 +10,8 @@ $ git lfs pull data/keys_freq.csv
 ## Run the project (on Linux):
 
 ```
-$ virtualenv Hackathon_env 
-$ source Hackathon/bin/activate
+$ virtualenv Hackathon_env
+$ source Hackathon_env/bin/activate
 $ pip install -r requirements.txt
 $ chmod 755 run.py
 $ ./run.py [train/detect]

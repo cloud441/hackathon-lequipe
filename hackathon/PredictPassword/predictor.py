@@ -15,14 +15,17 @@ class PasswordPredictor():
     def predictKey(self, frame):
         return self.clf.predict([frame])
 
+
+    ''' Call the classifier to predict all keys based on the frame. '''
     def predictKeys(self, frames):
         l = frames.values.tolist()
+        # We compute all prediction with multi-threading approach to gain time:
         results = Parallel(n_jobs=-1, verbose=1)(delayed(self.clf.predict)([l[i]]) for i in range(frames.shape[0]))
         return np.vstack(results).flatten()
 
 
     ''' Read a flow of frame to build the secret password. '''
-    def findPassword(self, keys, i):
+    def findPassword(self, predicted_keys, i):
         garbageKeys = ["NOKEY", "CTRL"]
         pwd = ""
         enter_blk_size = 0
@@ -30,8 +33,8 @@ class PasswordPredictor():
         stop_blk_size = 0
         last_key = "NOKEY"
 
-        while i < keys.shape[0] and enter_blk_size != BLK_SIZE:
-            key = keys[i]
+        while i < predicted_keys.shape[0] and enter_blk_size != BLK_SIZE:
+            key = predicted_keys[i]
             enter_blk_size = (enter_blk_size + 1) if key == "ENTER" else 0
 
             if key not in garbageKeys:
@@ -58,10 +61,10 @@ class PasswordPredictor():
 
 
     ''' Read a flow of frame and skip until the required key frame block. '''
-    def skipUntilKey(self, keys, i, key):
+    def skipUntilKey(self, predicted_keys, i, key):
         block_size = 0
-        while i < keys.shape[0]:
-            block_size = (block_size + 1) if keys[i] == key else 0
+        while i < predicted_keys.shape[0]:
+            block_size = (block_size + 1) if predicted_keys[i] == key else 0
 
             if block_size == BLK_SIZE:
                 return i
@@ -72,28 +75,28 @@ class PasswordPredictor():
 
 
     ''' Skip the flow of frame until first CTRL frame block, return the index. '''
-    def beginLogin(self, keys):
-        return self.skipUntilKey(keys, 0, "CTRL")
+    def beginLogin(self, predicted_keys):
+        return self.skipUntilKey(predicted_keys, 0, "CTRL")
 
 
     ''' Skip the flow of frame until no key frame block is detected, return the index. '''
-    def endLogin(self, keys, i):
-        return self.skipUntilKey(keys, i, "NOKEY")
+    def endLogin(self, predicted_keys, i):
+        return self.skipUntilKey(predicted_keys, i, "NOKEY")
 
 
     ''' Predict the password based on frame flow. '''
     def predictPassword(self, pics_table):
-        keys = self.predictKeys(pics_table)
-        i = self.beginLogin(keys)
+        predicted_keys = self.predictKeys(pics_table)
+        i = self.beginLogin(predicted_keys)
 
         if i == -1:
             print("predictPassword: Could not find CTRL-ALT-SUPPR sequence.")
             return None
 
-        i = self.endLogin(keys, i)
+        i = self.endLogin(predicted_keys, i)
 
         if i == -1:
             print("predictPassword: Could not find CTRL-ALT-SUPPR sequence.")
             return None
 
-        return self.findPassword(keys, i)
+        return self.findPassword(predicted_keys, i)
