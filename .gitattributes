@@ -1,1 +1,2 @@
 *.csv filter=lfs diff=lfs merge=lfs -text
+data/clf_model.sav filter=lfs diff=lfs merge=lfs -text

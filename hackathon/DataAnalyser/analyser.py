@@ -49,6 +49,7 @@ class Classifier():
         results = Parallel(n_jobs=-1, verbose=1)(delayed(self.predict)([frames_list[i]]) for i in range(frames_tables.shape[0]))
         return np.vstack(results).flatten()
 
+    ''' Compute the model validation score on Validation Database. '''
     def validationScore(self, valid_frames, valid_keys):
         predicted_keys = self.predictKeys(valid_frames)
         return metrics.accuracy_score(valid_keys, predicted_keys)

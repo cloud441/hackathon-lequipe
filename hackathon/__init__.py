@@ -21,20 +21,20 @@ def run(argv):
 
     # Train the SVM classifier on frame database:
     if argv[1] == 'train':
-        print("Classifier is training on Train database ...")
+        print("-->\tClassifier is training on Train database ...")
         classifier.train(db_manager.train_frames, db_manager.train_keys)
 
     # Try to determine the password based on the input frame:
     elif argv[1] == 'detect':
-        print("Classifier is loading the model ...")
+        print("-->\tClassifier is loading the model ...")
         if not classifier.loadModel():
             return
 
-        print("Loading the password frame ...")
+        print("-->\tLoading the password frame ...")
         pwd_frame = bin2df(password_bin)
 
         predict = predictor.PasswordPredictor(classifier)
-        print("Searching password...")
+        print("-->\tSearching password...")
         password = predict.predictPassword(pwd_frame)
 
         if not password:
@@ -49,7 +49,8 @@ def run(argv):
 
     # In train case, the model is validated by analysing the confusion matrix:
     if argv[1] == 'train':
-        print("Classifier is computing the validation score ...")
-        classifier.validationScore(db.manager.valid_frames, db_manager.valid_keys)
-        print("Classifier is predicting on Validation database ...")
+        print("-->\tClassifier is computing the validation score ...")
+        score = classifier.validationScore(db_manager.valid_frames, db_manager.valid_keys)
+        print("score of validation is: %f %%" %(score * 100))
+        print("-->\tClassifier is building the confusion matrix ...")
         classifier.confusionMatrix(db_manager.valid_frames, db_manager.valid_keys)

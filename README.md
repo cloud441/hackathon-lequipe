@@ -1,10 +1,16 @@
 # hackathon-lequipe
 Git repository of Hackathon 2021 (Energy Data Hack) with "L'equipe" team.
 
-# Pull the database:
+## Pull the database:
 
 ```
 $ git lfs pull data/keys_freq.csv
+```
+
+## Pull the pre-trained model (if you don't want to do it):
+
+```
+$ git lfs pull data/clf_model.sav
 ```
 
 ## Run the project (on Linux):
